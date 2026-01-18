@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Aura OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&family=JetBrains+Mono:wght@200;300;400&display=swap');
+
+      :root {
+        --app-height: 100dvh;
+      }
+
+      body {
+        background-color: #020617; /* Slate-950 */
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: var(--app-height);
+        overflow: hidden; /* App handles scrolling internally */
+        font-family: 'Inter', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      /* Noise Overlay */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: var(--app-height);
+        pointer-events: none;
+        z-index: 5;
+        opacity: 0.04;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48ZmlsdGVyIGlkPSJnoiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=');
+        mix-blend-mode: overlay;
+      }
+
+      /* 
+         Liquid Mercury Theme (Organic High-Tech) 
+      */
+      .panel-mercury {
+        /* Base Gradient: Fluid Metallic */
+        background: linear-gradient(
+          145deg, 
+          rgba(255, 255, 255, 0.08) 0%, 
+          rgba(255, 255, 255, 0.03) 40%, 
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        
+        /* Glass/Liquid Effect */
+        backdrop-filter: blur(40px) saturate(140%);
+        -webkit-backdrop-filter: blur(40px) saturate(140%);
+        
+        /* Border: Soft glowing edge */
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* Depth & Glow */
+        box-shadow: 
+          0 20px 40px -12px rgba(0, 0, 0, 0.8),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+          inset 0 20px 40px rgba(0, 0, 0, 0.2);
+
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        transform: translateZ(0); /* Hardware accel */
+        border-radius: 24px;
+      }
+      
+      /* Hover only on devices that support it to save mobile perf */
+      @media (hover: hover) {
+        .panel-mercury:hover {
+          transform: translateY(-4px) scale(1.005);
+          background: linear-gradient(
+            145deg, 
+            rgba(255, 255, 255, 0.12) 0%, 
+            rgba(255, 255, 255, 0.04) 50%, 
+            rgba(255, 255, 255, 0.02) 100%
+          );
+          border-top-color: rgba(255, 255, 255, 0.3);
+          box-shadow: 
+            0 30px 60px -12px rgba(0, 0, 0, 0.9),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+            inset 0 0 30px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
+          z-index: 10;
+        }
+        
+        body {
+          cursor: none;
+        }
+      }
+      
+      /* Subtle iridescent sheen */
+      .panel-mercury::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      /* Matrix Layout (Golden Ratio & PI) */
+      .matrix-container {
+        display: grid;
+        grid-template-columns: 1.618fr 1fr;
+        gap: calc(16px * 1.618); 
+        width: 100%;
+        height: 100%;
+        align-items: stretch;
+      }
+
+      .matrix-main { height: 100%; }
+      .matrix-side {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16px * 1.618);
+        height: 100%;
+      }
+
+      /* Mobile Stack - Mobile First overrides */
+      @media (max-width: 1024px) {
+        .matrix-container {
+          display: flex;
+          flex-direction: column;
+          height: auto;
+          gap: 24px;
+          padding-bottom: 120px; /* Space for Bottom Nav */
+        }
+        
+        .matrix-main, .matrix-side {
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+      }
+
+      @keyframes ripple {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0.3; }
+        50% { opacity: 0.1; }
+        100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+      }
+      
+      .ripple-anim {
+        animation: ripple 0.8s cubic-bezier(0.1, 0.5, 0.1, 1) forwards;
+        background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+      }
+
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+      
+      /* Safe area utilities */
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
+    "firebase/app": "https://esm.sh/firebase@10.8.0/app",
+    "firebase/auth": "https://esm.sh/firebase@10.8.0/auth",
+    "firebase/": "https://esm.sh/firebase@^12.8.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "Aura OS - Das Singularitäts-Dashboard",
+  "description": "Ein hyper-ästhetisches persönliches Betriebssystem, das digitale Effizienz mit mystischer Strategie verbindet. Mit Interfaces aus flüssigem Quecksilber, Deep-Space-Atmosphäre und Gemini-gestützter Numerologie und Traumanalyse.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
